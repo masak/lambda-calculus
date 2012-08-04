@@ -13,7 +13,8 @@ Here's the things I hope to implement:
 * Asking whether an expression is closed (contains no free variables).
 * α-conversion: "hygienic" renaming of bound variables.
 * β-reduction: actually applying an appliction.
-* η-conversion: "canceling" some abstractions of applications.
+* η-reduction: converting `λx.f x` into `f`
+* η-abstraction: converting `f` into `λx.f x`
 * Reduction strategies:
     * Applicative order
     * Normal order
