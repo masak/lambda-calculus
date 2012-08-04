@@ -9,7 +9,7 @@ class Language::Lambda::Calculus {
         regex application-step { <variable> | <abstraction> | '(' <expression> ')' }
 
         regex variable { <:Letter> }
-        regex abstraction { '(' 'λ' <variable> '.' <expression> ')' }
+        regex abstraction { 'λ' <variable> '.' <expression> }
     }
 
     my class AST {
