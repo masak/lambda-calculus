@@ -9,7 +9,7 @@ class Language::Lambda::Calculus {
         regex application-step { <variable> | <abstraction> | '(' <expression> ')' }
 
         regex variable { <:Letter> }
-        regex abstraction { 'λ' <variable> '.' <expression> }
+        regex abstraction { 'λ' <variable>+ '.' <expression> }
     }
 
     my class AST {
@@ -40,9 +40,16 @@ class Language::Lambda::Calculus {
         method abstraction($/) {
             make {
                 :abstraction,
-                :left(~$<variable>),
+                :left(~$<variable>[*-1]),
                 :right($<expression>.ast),
             };
+            for reverse $<variable>[0..*-2] -> $variable {
+                make {
+                    :abstraction,
+                    :left(~$variable),
+                    :right($/.ast),
+                };
+            }
         }
     }
 

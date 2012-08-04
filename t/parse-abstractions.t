@@ -16,4 +16,11 @@ ok $lc.is_expression('(λx.x)'),
               'the body of an abstraction extends as far right as possible';
 }
 
+# A sequence of abstractions is contracted: λx.λy.λz.N is abbreviated as λxyz.N
+{
+    is_deeply $lc.ast('λx.λy.λz.z'),
+              $lc.ast('λxyz.z'),
+              'a sequence of abstractions can be abbreviated';
+}
+
 done;
