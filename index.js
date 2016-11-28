@@ -1,6 +1,16 @@
 var IS_LETTER = /^[a-zA-Z]/;
 var IS_WHITESPACE = /^\s/;
 
+function Abstraction(parameter, expr) {
+    this.parameter = parameter;
+    this.expr = expr;
+}
+
+function Application(left, right) {
+    this.left = left;
+    this.right = right;
+}
+
 function Parser(sourceText) {
     this.sourceText = sourceText;
     this.position = 0;
@@ -27,8 +37,11 @@ Parser.prototype = {
     },
 
     parseVariable: function parseVariable() {
+        var variable = this.sourceText.substring(this.position, this.position + 1);
         // advance past the variable
         this.position += 1;
+
+        return variable;
     },
 
     parseAbstraction: function parseAbstraction() {
@@ -37,27 +50,40 @@ Parser.prototype = {
         if (!this.isAtVariable) {
             throw new Error("Expected parameter (variable) at position " + this.position);
         }
-        this.parseVariable();
+        var parameter = this.parseVariable();
         if (!this.isAtCharacter(".")) {
             throw new Error("Expected dot at position " + this.position);
         }
         // advance past the '.'
         this.position += 1;
-        this.parseExpression();
+        var expr = this.parseExpression();
+
+        return new Abstraction(parameter, expr);
     },
 
     parseParenthesized: function parseParenthesized() {
         // advance past the '('
         this.position += 1;
-        this.parseExpression();
+        var ast = this.parseExpression();
         if (!this.isAtCharacter(")")) {
             throw new Error("Expected ')' at position " + this.position);
         }
         // advance past the ')'
         this.position += 1;
+
+        return ast;
     },
 
     parseExpression: function parseExpression() {
+        var ast;
+        function combine(oldAst, newAst) {
+            if (typeof oldAst === "undefined") {
+                return newAst;
+            }
+
+            return new Application(oldAst, newAst);
+        }
+
         while (this.position < this.sourceText.length) {
             this.skipWhitespace();
             if (this.position >= this.sourceText.length) {
@@ -65,40 +91,46 @@ Parser.prototype = {
             }
 
             if (this.isAtVariable()) {
-                this.parseVariable();
+                ast = combine(ast, this.parseVariable());
             }
             else if (this.isAtCharacter("λ")) {
-                this.parseAbstraction();
+                ast = combine(ast, this.parseAbstraction());
             }
             else if (this.isAtCharacter("(")) {
-                this.parseParenthesized();
+                ast = combine(ast, this.parseParenthesized());
             }
             else if (this.isAtCharacter(")")) {
                 break;
             }
             else {
-                throw new Error("Expected lambda expression at position " + this.position);
+                throw new Error("Expected expression at position " + this.position);
             }
         }
+
+        return ast;
     },
 };
 
 var lambdaCalculus = {
-    isExpression: function(text) {
-        var parser = new Parser(text);
-
+    isExpression: function isExpression(text) {
         try {
-            parser.parseExpression();
+            this.ast(text);
         }
         catch (e) {
             return false;
         }
 
+        return true;
+    },
+
+    ast: function ast(text) {
+        var parser = new Parser(text);
+        var ast = parser.parseExpression();
 
         if (parser.position < text.length) {
-            return false;
+            throw new Error("Expected <end-of-string> at position " + parser.position);
         }
 
-        return true;
+        return ast;
     },
 };
