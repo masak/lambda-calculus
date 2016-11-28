@@ -52,7 +52,7 @@ class Parser {
         // advance past the 'λ'
         this.position += 1;
         if (!this.isAtVariable) {
-            throw new Error("Expected parameter (variable) at position " + this.position);
+            throw new Error(`Expected parameter (variable) at position ${this.position}`);
         }
         let parameter = this.parseVariable();
         let moreParameters = [];
@@ -61,7 +61,7 @@ class Parser {
                 moreParameters.unshift(parameter);
                 parameter = this.parseVariable();
             } else {
-                throw new Error("Expected dot at position " + this.position);
+                throw new Error(`Expected dot at position ${this.position}`);
             }
         }
         // advance past the '.'
@@ -69,7 +69,7 @@ class Parser {
         let expr = this.parseExpression();
 
         let ast = new Abstraction(parameter, expr);
-        moreParameters.forEach(function(p) {
+        moreParameters.forEach(p => {
             ast = new Abstraction(p, ast);
         });
         return ast;
@@ -80,7 +80,7 @@ class Parser {
         this.position += 1;
         let ast = this.parseExpression();
         if (!this.isAtCharacter(")")) {
-            throw new Error("Expected ')' at position " + this.position);
+            throw new Error(`Expected ')' at position ${this.position}`);
         }
         // advance past the ')'
         this.position += 1;
@@ -113,7 +113,7 @@ class Parser {
             } else if (this.isAtCharacter(")")) {
                 break;
             } else {
-                throw new Error("Expected expression at position " + this.position);
+                throw new Error(`Expected expression at position ${this.position}`);
             }
         }
 
@@ -137,7 +137,7 @@ module.exports = {
         let result = parser.parseExpression();
 
         if (parser.position < text.length) {
-            throw new Error("Expected <end-of-string> at position " + parser.position);
+            throw new Error(`Expected <end-of-string> at position ${parser.position}`);
         }
 
         return result;
