@@ -5,7 +5,8 @@ module.exports = function(config) {
         frameworks: ['jasmine'],
         files: [
             "index.js",
-            "test/parse-variables.js"
+            "test/parse-variables.js",
+            "test/parse-abstractions.js",
         ],
         reporters: ['spec'],
         port: 9876,
