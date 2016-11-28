@@ -1,6 +1,3 @@
-/* exported lambdaCalculus */
-"use strict";
-
 var IS_LETTER = /^[a-zA-Z]/;
 var IS_WHITESPACE = /^\s/;
 
@@ -120,7 +117,7 @@ Parser.prototype = {
     },
 };
 
-var lambdaCalculus = {
+module.exports = {
     isExpression: function isExpression(text) {
         try {
             this.ast(text);

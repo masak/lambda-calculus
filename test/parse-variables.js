@@ -1,17 +1,19 @@
-/* global describe, expect, it, lambdaCalculus */
-"use strict";
+/* global describe, it */
+
+var assert = require("assert");
+var lambdaCalculus = require("../index");
 
 describe("a variable in lambda calculus", function() {
     it("can be a letter", function () {
-        expect(lambdaCalculus.isExpression("a")).toBe(true);
-        expect(lambdaCalculus.isExpression("m")).toBe(true);
+        assert(lambdaCalculus.isExpression("a"));
+        assert(lambdaCalculus.isExpression("m"));
     });
 
     it("can't be a digit", function () {
-        expect(lambdaCalculus.isExpression("2")).toBe(false);
+        assert(!lambdaCalculus.isExpression("2"));
     });
 
     it("can't be an underscore", function () {
-        expect(lambdaCalculus.isExpression("_")).toBe(false);
+        assert(!lambdaCalculus.isExpression("_"));
     });
 });

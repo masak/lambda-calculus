@@ -1,6 +1,5 @@
 {
-    "globals": {
-    },
+    "parser": "babel-eslint",
     "rules": {
         "array-bracket-spacing": ["error", "never"],
         "block-scoped-var": "error",
@@ -78,5 +77,15 @@
         "strict": ["error", "global"],
         "use-isnan": "error",
         "wrap-iife": ["error", "inside"]
+    },
+    "env": {
+        "node": true,
+        "es6": true,
+        "browser": true,
+        "mocha": true,
+        "commonjs": true
+    },
+    "ecmaFeatures": {
+        "experimentalObjectRestSpread": true
     }
 }
