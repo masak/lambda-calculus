@@ -4,7 +4,7 @@
   "description": "An implementation of Church's lambda calculus in JavaScript",
   "main": "index.js",
   "scripts": {
-    "test": "mocha",
+    "test": "mocha --compilers js:babel-core/register",
     "lint": "eslint ."
   },
   "author": "Carl Mäsak",

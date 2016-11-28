@@ -1,57 +1,61 @@
-var IS_LETTER = /^[a-zA-Z]/;
-var IS_WHITESPACE = /^\s/;
+const IS_LETTER = /^[a-zA-Z]/;
+const IS_WHITESPACE = /^\s/;
 
-function Abstraction(parameter, expr) {
-    this.parameter = parameter;
-    this.expr = expr;
+class Abstraction {
+    constructor(parameter, expr) {
+        this.parameter = parameter;
+        this.expr = expr;
+    }
 }
 
-function Application(left, right) {
-    this.left = left;
-    this.right = right;
+class Application {
+    constructor(left, right) {
+        this.left = left;
+        this.right = right;
+    }
 }
 
-function Parser(sourceText) {
-    this.sourceText = sourceText;
-    this.position = 0;
-}
+class Parser {
+    constructor(sourceText) {
+        this.sourceText = sourceText;
+        this.position = 0;
+    }
 
-Parser.prototype = {
-    isAtVariable: function isAtVariable() {
+    isAtVariable() {
         return IS_LETTER.test(this.sourceText.substring(this.position));
-    },
+    }
 
-    isAtCharacter: function isAtCharacter(c) {
+    isAtCharacter(c) {
         return this.sourceText.substring(this.position, this.position + 1) === c;
-    },
+    }
 
-    isAtWhitespace: function isAtWhitespace() {
+    isAtWhitespace() {
         return IS_WHITESPACE.test(this.sourceText.substring(this.position, this.position + 1));
-    },
+    }
 
-    skipWhitespace: function skipWhitespace() {
-        var L = this.sourceText.length;
+    skipWhitespace() {
+        let L = this.sourceText.length;
         while (this.position < L && this.isAtWhitespace()) {
             this.position += 1;
         }
-    },
+    }
 
-    parseVariable: function parseVariable() {
-        var variable = this.sourceText.substring(this.position, this.position + 1);
+    parseVariable() {
+        let variable = this.sourceText.substring(this.position, this.position + 1);
         // advance past the variable
         this.position += 1;
 
         return variable;
-    },
+    }
 
-    parseAbstraction: function parseAbstraction() {
+    parseAbstraction() {
         // advance past the 'λ'
         this.position += 1;
         if (!this.isAtVariable) {
             throw new Error("Expected parameter (variable) at position " + this.position);
         }
-        var parameter = this.parseVariable();
-        var moreParameters = [];
+        let parameter = this.parseVariable();
+        let moreParameters = [];
         while (!this.isAtCharacter(".")) {
             if (this.isAtVariable) {
                 moreParameters.unshift(parameter);
@@ -62,19 +66,19 @@ Parser.prototype = {
         }
         // advance past the '.'
         this.position += 1;
-        var expr = this.parseExpression();
+        let expr = this.parseExpression();
 
-        var ast = new Abstraction(parameter, expr);
+        let ast = new Abstraction(parameter, expr);
         moreParameters.forEach(function(p) {
             ast = new Abstraction(p, ast);
         });
         return ast;
-    },
+    }
 
-    parseParenthesized: function parseParenthesized() {
+    parseParenthesized() {
         // advance past the '('
         this.position += 1;
-        var ast = this.parseExpression();
+        let ast = this.parseExpression();
         if (!this.isAtCharacter(")")) {
             throw new Error("Expected ')' at position " + this.position);
         }
@@ -82,10 +86,10 @@ Parser.prototype = {
         this.position += 1;
 
         return ast;
-    },
+    }
 
-    parseExpression: function parseExpression() {
-        var ast;
+    parseExpression() {
+        let ast;
         function combine(oldAst, newAst) {
             if (typeof oldAst === "undefined") {
                 return newAst;
@@ -114,11 +118,11 @@ Parser.prototype = {
         }
 
         return ast;
-    },
-};
+    }
+}
 
 module.exports = {
-    isExpression: function isExpression(text) {
+    isExpression(text) {
         try {
             this.ast(text);
         } catch (e) {
@@ -128,9 +132,9 @@ module.exports = {
         return true;
     },
 
-    ast: function ast(text) {
-        var parser = new Parser(text);
-        var result = parser.parseExpression();
+    ast(text) {
+        let parser = new Parser(text);
+        let result = parser.parseExpression();
 
         if (parser.position < text.length) {
             throw new Error("Expected <end-of-string> at position " + parser.position);
