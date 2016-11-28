@@ -7,6 +7,7 @@ module.exports = function(config) {
             "index.js",
             "test/parse-variables.js",
             "test/parse-abstractions.js",
+            "test/parse-applications.js",
         ],
         reporters: ['spec'],
         port: 9876,

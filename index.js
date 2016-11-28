@@ -1,4 +1,5 @@
 var IS_LETTER = /^[a-zA-Z]/;
+var IS_WHITESPACE = /^\s/;
 
 function Parser(sourceText) {
     this.sourceText = sourceText;
@@ -12,6 +13,17 @@ Parser.prototype = {
 
     isAtCharacter(c) {
         return this.sourceText.substring(this.position, this.position + 1) === c;
+    },
+
+    isAtWhitespace() {
+        return IS_WHITESPACE.test(this.sourceText.substring(this.position, this.position + 1));
+    },
+
+    skipWhitespace() {
+        var L = this.sourceText.length;
+        while (this.position < L && this.isAtWhitespace()) {
+            this.position += 1;
+        }
     },
 
     parseVariable: function parseVariable() {
@@ -46,17 +58,27 @@ Parser.prototype = {
     },
 
     parseExpression: function parseExpression() {
-        if (this.isAtVariable()) {
-            this.parseVariable();
-        }
-        else if (this.isAtCharacter("λ")) {
-            this.parseAbstraction();
-        }
-        else if (this.isAtCharacter("(")) {
-            this.parseParenthesized();
-        }
-        else {
-            throw new Error("Expected lambda expression at position " + this.position);
+        while (this.position < this.sourceText.length) {
+            this.skipWhitespace();
+            if (this.position >= this.sourceText.length) {
+                break;
+            }
+
+            if (this.isAtVariable()) {
+                this.parseVariable();
+            }
+            else if (this.isAtCharacter("λ")) {
+                this.parseAbstraction();
+            }
+            else if (this.isAtCharacter("(")) {
+                this.parseParenthesized();
+            }
+            else if (this.isAtCharacter(")")) {
+                break;
+            }
+            else {
+                throw new Error("Expected lambda expression at position " + this.position);
+            }
         }
     },
 };
