@@ -19,4 +19,12 @@ describe("an abstraction in lambda calculus", function() {
             lambdaCalculus.ast("λx.((λx.x) x)")
         )).toBe(true);
     });
+
+    // A sequence of abstractions is contracted: λx.λy.λz.N is abbreviated as λxyz.N
+    it("can be contracted by writing parameters one after another", function() {
+        expect(deeplyEqual(
+            lambdaCalculus.ast("λx.λy.λz.z"),
+            lambdaCalculus.ast("λxyz.z")
+        )).toBe(true);
+    });
 });

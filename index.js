@@ -51,14 +51,25 @@ Parser.prototype = {
             throw new Error("Expected parameter (variable) at position " + this.position);
         }
         var parameter = this.parseVariable();
-        if (!this.isAtCharacter(".")) {
-            throw new Error("Expected dot at position " + this.position);
+        var moreParameters = [];
+        while (!this.isAtCharacter(".")) {
+            if (this.isAtVariable) {
+                moreParameters.unshift(parameter);
+                parameter = this.parseVariable();
+            }
+            else {
+                throw new Error("Expected dot at position " + this.position);
+            }
         }
         // advance past the '.'
         this.position += 1;
         var expr = this.parseExpression();
 
-        return new Abstraction(parameter, expr);
+        var ast = new Abstraction(parameter, expr);
+        moreParameters.forEach(function(p) {
+            ast = new Abstraction(p, ast);
+        });
+        return ast;
     },
 
     parseParenthesized: function parseParenthesized() {
