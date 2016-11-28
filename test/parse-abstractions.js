@@ -1,4 +1,5 @@
-'use strict';
+/* global describe, expect, it, lambdaCalculus */
+"use strict";
 
 function deeplyEqual(o1, o2) {
     return JSON.stringify(o1) === JSON.stringify(o2);

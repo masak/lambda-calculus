@@ -1,3 +1,6 @@
+/* exported lambdaCalculus */
+"use strict";
+
 var IS_LETTER = /^[a-zA-Z]/;
 var IS_WHITESPACE = /^\s/;
 
@@ -21,15 +24,15 @@ Parser.prototype = {
         return IS_LETTER.test(this.sourceText.substring(this.position));
     },
 
-    isAtCharacter(c) {
+    isAtCharacter: function isAtCharacter(c) {
         return this.sourceText.substring(this.position, this.position + 1) === c;
     },
 
-    isAtWhitespace() {
+    isAtWhitespace: function isAtWhitespace() {
         return IS_WHITESPACE.test(this.sourceText.substring(this.position, this.position + 1));
     },
 
-    skipWhitespace() {
+    skipWhitespace: function skipWhitespace() {
         var L = this.sourceText.length;
         while (this.position < L && this.isAtWhitespace()) {
             this.position += 1;
@@ -56,8 +59,7 @@ Parser.prototype = {
             if (this.isAtVariable) {
                 moreParameters.unshift(parameter);
                 parameter = this.parseVariable();
-            }
-            else {
+            } else {
                 throw new Error("Expected dot at position " + this.position);
             }
         }
@@ -103,17 +105,13 @@ Parser.prototype = {
 
             if (this.isAtVariable()) {
                 ast = combine(ast, this.parseVariable());
-            }
-            else if (this.isAtCharacter("λ")) {
+            } else if (this.isAtCharacter("λ")) {
                 ast = combine(ast, this.parseAbstraction());
-            }
-            else if (this.isAtCharacter("(")) {
+            } else if (this.isAtCharacter("(")) {
                 ast = combine(ast, this.parseParenthesized());
-            }
-            else if (this.isAtCharacter(")")) {
+            } else if (this.isAtCharacter(")")) {
                 break;
-            }
-            else {
+            } else {
                 throw new Error("Expected expression at position " + this.position);
             }
         }
@@ -126,8 +124,7 @@ var lambdaCalculus = {
     isExpression: function isExpression(text) {
         try {
             this.ast(text);
-        }
-        catch (e) {
+        } catch (e) {
             return false;
         }
 
@@ -136,12 +133,12 @@ var lambdaCalculus = {
 
     ast: function ast(text) {
         var parser = new Parser(text);
-        var ast = parser.parseExpression();
+        var result = parser.parseExpression();
 
         if (parser.position < text.length) {
             throw new Error("Expected <end-of-string> at position " + parser.position);
         }
 
-        return ast;
+        return result;
     },
 };
