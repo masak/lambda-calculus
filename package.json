@@ -2,6 +2,10 @@
   "name": "lambda-calculus",
   "version": "0.0.1",
   "description": "An implementation of Church's lambda calculus in JavaScript",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/masak/lambda-calculus"
+  },
   "main": "index.js",
   "scripts": {
     "test": "mocha --compilers js:babel-core/register",
