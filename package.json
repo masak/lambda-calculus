@@ -4,7 +4,8 @@
   "description": "An implementation of Church's lambda calculus in JavaScript",
   "main": "index.js",
   "scripts": {
-    "test": "karma start test/karma.conf.js"
+    "test": "karma start test/karma.conf.js",
+    "lint": "eslint ."
   },
   "author": "Carl Mäsak",
   "license": "BSD-3-Clause",
