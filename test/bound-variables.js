@@ -14,4 +14,8 @@ describe("expressions with and without bound variables", () => {
         assert(isBound("x", ast("λx.yx")));
         assert(!isBound("y", ast("λx.yx")));
     });
+
+    it("has a bound variable not at the top", () => {
+        assert(isBound("y", ast("λx.λy.xy")));
+    });
 });

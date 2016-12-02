@@ -143,5 +143,11 @@ export function ast(text) {
 }
 
 export function isBound(variable, ast) {
-    return variable === ast.parameter;
+    if (variable === ast.parameter) {
+        return true;
+    }
+    if (ast.expr instanceof Abstraction) {
+        return isBound(variable, ast.expr);
+    }
+    return false;
 }
