@@ -142,4 +142,8 @@ module.exports = {
 
         return ast;
     },
+
+    isBound(variable, ast) {
+        return variable === ast.parameter;
+    },
 };
