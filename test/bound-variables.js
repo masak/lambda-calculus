@@ -15,7 +15,12 @@ describe("expressions with and without bound variables", () => {
         assert(!isBound("y", ast("λx.yx")));
     });
 
-    it("has a bound variable not at the top", () => {
+    it("has a bound variable in a nested abstraction", () => {
         assert(isBound("y", ast("λx.λy.xy")));
+    });
+
+    it("has a bound variable in an application", () => {
+        assert(isBound("x", ast("(λx.x) y")));
+        assert(!isBound("y", ast("(λx.x) y")));
     });
 });
