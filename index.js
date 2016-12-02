@@ -121,29 +121,27 @@ class Parser {
     }
 }
 
-module.exports = {
-    isExpression(text) {
-        try {
-            this.ast(text);
-        } catch (e) {
-            return false;
-        }
+export function isExpression(text) {
+    try {
+        ast(text);
+    } catch (e) {
+        return false;
+    }
 
-        return true;
-    },
+    return true;
+}
 
-    ast(text) {
-        let parser = new Parser(text);
-        let ast = parser.parseExpression();
+export function ast(text) {
+    let parser = new Parser(text);
+    let result = parser.parseExpression();
 
-        if (parser.position < text.length) {
-            throw new Error(`Expected <end-of-string> at position ${parser.position}`);
-        }
+    if (parser.position < text.length) {
+        throw new Error(`Expected <end-of-string> at position ${parser.position}`);
+    }
 
-        return ast;
-    },
+    return result;
+}
 
-    isBound(variable, ast) {
-        return variable === ast.parameter;
-    },
-};
+export function isBound(variable, ast) {
+    return variable === ast.parameter;
+}

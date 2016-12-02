@@ -49,7 +49,6 @@
         "no-redeclare": "error",
         "no-self-compare": "error",
         "no-sequences": "error",
-        "no-shadow": "error",
         "no-tabs": "error",
         "no-this-before-super": "error",
         "no-trailing-spaces": "error",
