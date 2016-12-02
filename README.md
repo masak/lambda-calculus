@@ -8,8 +8,8 @@ want to gain a better understanding of its mechanisms.
 Here's the things I hope to implement:
 
 * Syntax for lambda terms: variables, abstraction, application.
-* Abbreviated syntax. ← *I'm this far already*
-* Asking whether a variable is bound in a certain expression.
+* Abbreviated syntax.
+* Asking whether a variable is bound in a certain expression. ← *I'm this far already*
 * Asking whether an expression is closed (contains no free variables).
 * α-conversion: "hygienic" renaming of bound variables.
 * β-reduction: actually applying an appliction.
