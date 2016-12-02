@@ -134,12 +134,12 @@ module.exports = {
 
     ast(text) {
         let parser = new Parser(text);
-        let result = parser.parseExpression();
+        let ast = parser.parseExpression();
 
         if (parser.position < text.length) {
             throw new Error(`Expected <end-of-string> at position ${parser.position}`);
         }
 
-        return result;
+        return ast;
     },
 };
