@@ -56,6 +56,7 @@ class Parser {
         }
         let parameter = this.parseVariable();
         let moreParameters = [];
+        this.skipWhitespace();
         while (!this.isAtCharacter(".")) {
             if (this.isAtVariable) {
                 moreParameters.unshift(parameter);
@@ -63,6 +64,7 @@ class Parser {
             } else {
                 throw new Error(`Expected dot at position ${this.position}`);
             }
+            this.skipWhitespace();
         }
         // advance past the '.'
         this.position += 1;
