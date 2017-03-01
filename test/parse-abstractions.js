@@ -25,4 +25,8 @@ describe("an abstraction in lambda calculus", () => {
             ast("λxyz.z")
         );
     });
+
+    it("does not allow writing a λ after a λ", () => {
+        assert.throws(() => ast("λλ.x"), /Expected parameter \(variable\)/);
+    });
 });

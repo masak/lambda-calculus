@@ -51,7 +51,7 @@ class Parser {
     parseAbstraction() {
         // advance past the 'λ'
         this.position += 1;
-        if (!this.isAtVariable) {
+        if (!this.isAtVariable()) {
             throw new Error(`Expected parameter (variable) at position ${this.position}`);
         }
         let parameter = this.parseVariable();
