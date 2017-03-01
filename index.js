@@ -58,7 +58,7 @@ class Parser {
         let moreParameters = [];
         this.skipWhitespace();
         while (!this.isAtCharacter(".")) {
-            if (this.isAtVariable) {
+            if (this.isAtVariable()) {
                 moreParameters.unshift(parameter);
                 parameter = this.parseVariable();
             } else {
