@@ -91,7 +91,6 @@ class Parser {
     }
 
     parseExpression() {
-        let ast;
         function combine(oldAst, newAst) {
             if (typeof oldAst === "undefined") {
                 return newAst;
@@ -100,6 +99,7 @@ class Parser {
             return new Application(oldAst, newAst);
         }
 
+        let ast;
         while (this.position < this.sourceText.length) {
             this.skipWhitespace();
             if (this.position >= this.sourceText.length) {
