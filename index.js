@@ -1,6 +1,12 @@
 const IS_LETTER = /^[a-zA-Z]/;
 const IS_WHITESPACE = /^\s/;
 
+class Variable {
+    constructor(name) {
+        this.name = name;
+    }
+}
+
 class Abstraction {
     constructor(parameter, expr) {
         this.parameter = parameter;
@@ -41,15 +47,15 @@ class Parser {
     }
 
     parseVariable() {
-        let variable = this.sourceText.substring(this.position, this.position + 1);
+        let name = this.sourceText.substring(this.position, this.position + 1);
         // advance one character
         this.position += 1;
         while (this.isAtVariable()) {
-            variable += this.sourceText.substring(this.position, this.position + 1);
+            name += this.sourceText.substring(this.position, this.position + 1);
             this.position += 1;
         }
 
-        return variable;
+        return new Variable(name);
     }
 
     parseAbstraction() {
@@ -157,11 +163,11 @@ export function ast(text) {
     return result;
 }
 
-export function isBound(variable, ast) {
+export function isBound(name, ast) {
     if (ast instanceof Abstraction) {
-        return variable === ast.parameter || isBound(variable, ast.expr);
+        return name === ast.parameter.name || isBound(name, ast.expr);
     } else if (ast instanceof Application) {
-        return isBound(variable, ast.left) || isBound(variable, ast.right);
+        return isBound(name, ast.left) || isBound(name, ast.right);
     }
     return false;
 }
