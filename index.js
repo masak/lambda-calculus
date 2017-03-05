@@ -15,9 +15,9 @@ class Abstraction {
 }
 
 class Application {
-    constructor(left, right) {
-        this.left = left;
-        this.right = right;
+    constructor(operator, argument) {
+        this.operator = operator;
+        this.argument = argument;
     }
 }
 
@@ -167,7 +167,7 @@ export function isBound(name, ast) {
     if (ast instanceof Abstraction) {
         return name === ast.parameter.name || isBound(name, ast.expr);
     } else if (ast instanceof Application) {
-        return isBound(name, ast.left) || isBound(name, ast.right);
+        return isBound(name, ast.operator) || isBound(name, ast.argument);
     }
     return false;
 }
