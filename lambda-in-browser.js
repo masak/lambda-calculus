@@ -1,4 +1,6 @@
-import { ast } from './index';
+/* global $ */
+
+import { ast } from "./index";
 
 const FADED_BG_COLORS = [
     "#ffddaa",
@@ -11,7 +13,7 @@ const FADED_BG_COLORS = [
     "#f8eee4",
     "#f7f1ee",
     "#f6f3f1",
-    "#f5f5f5"
+    "#f5f5f5",
 ];
 const ESCAPE_KEY = 27;
 
@@ -35,15 +37,14 @@ function evaluateJsExpression(event) {
     try {
         let result = ast(jsExpression).constructor.name;
         $result = $("<pre></pre>").text(result);
-    }
-    catch (ex) {
+    } catch (ex) {
         $result = $("<em></em>").append(
             $("<pre></pre>").text(ex.message).addClass("js-error")
         );
     }
 
     let $evalResult = $form.find(".js-result");
-    $evalResult.empty()
+    $evalResult.empty();
     $evalResult.append($result);
     function fade(n) {
         $result.css("background-color", FADED_BG_COLORS[n]);
