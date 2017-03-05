@@ -1,6 +1,78 @@
 const IS_LETTER = /^[a-zA-Z]/;
 const IS_WHITESPACE = /^\s/;
 
+class Token {
+    constructor(type, contents) {
+        this.type = type;
+        this.contents = contents;
+    }
+}
+
+const TokenType = {
+    LAMBDA: "LAMBDA",
+    VARIABLE: "VARIABLE",
+    DOT: "DOT",
+    OPENING_PARENTHESIS: "OPENING_PARENTHESIS",
+    CLOSING_PARENTHESIS: "CLOSING_PARENTHESIS",
+    EOF: "EOF",
+};
+
+class Lexer {
+    constructor(sourceText) {
+        this.sourceText = sourceText;
+        this.position = 0;
+    }
+
+    isAtCharacter(c) {
+        return this.sourceText.substring(this.position, this.position + 1) === c;
+    }
+
+    isAtWhitespace() {
+        return IS_WHITESPACE.test(this.sourceText.substring(this.position, this.position + 1));
+    }
+
+    nextToken() {
+        let sourceLength = this.sourceText.length;
+        while (this.position < sourceLength && this.isAtWhitespace()) {
+            this.position += 1;
+        }
+
+        let c = this.sourceText.substring(this.position);
+        if (this.position >= sourceLength) {
+            return new Token(TokenType.EOF);
+        } else if (IS_LETTER.test(c)) {
+            let newPosition = this.position + 1;
+            while (IS_LETTER.test(this.sourceText.substring(newPosition))) {
+                newPosition += 1;
+            }
+            let name = this.sourceText.substring(this.position, newPosition);
+            this.position = newPosition;
+            return new Token(TokenType.VARIABLE, name);
+        } else if (this.isAtCharacter("λ")) {
+            this.position += 1;
+            return new Token(TokenType.LAMBDA);
+        } else if (this.isAtCharacter(".")) {
+            this.position += 1;
+            return new Token(TokenType.DOT);
+        } else if (this.isAtCharacter("(")) {
+            this.position += 1;
+            return new Token(TokenType.OPENING_PARENTHESIS);
+        } else if (this.isAtCharacter(")")) {
+            this.position += 1;
+            return new Token(TokenType.CLOSING_PARENTHESIS);
+        } else {
+            throw new Error(`Unknown character at position ${this.position}: ${c}`);
+        }
+    }
+
+    peekToken() {
+        let oldPosition = this.position;
+        let token = this.nextToken();
+        this.position = oldPosition;
+        return token;
+    }
+}
+
 class Variable {
     constructor(name) {
         this.name = name;
@@ -22,62 +94,47 @@ class Application {
 }
 
 class Parser {
-    constructor(sourceText) {
-        this.sourceText = sourceText;
-        this.position = 0;
+    constructor(sourceText, lexer = new Lexer(sourceText)) {
+        this.lexer = lexer;
     }
 
-    isAtVariable() {
-        return IS_LETTER.test(this.sourceText.substring(this.position));
+    nextToken() {
+        return this.lexer.nextToken();
     }
 
-    isAtCharacter(c) {
-        return this.sourceText.substring(this.position, this.position + 1) === c;
+    peekToken() {
+        return this.lexer.peekToken();
     }
 
-    isAtWhitespace() {
-        return IS_WHITESPACE.test(this.sourceText.substring(this.position, this.position + 1));
+    ignoreToken() {
+        this.nextToken();
     }
 
-    skipWhitespace() {
-        let L = this.sourceText.length;
-        while (this.position < L && this.isAtWhitespace()) {
-            this.position += 1;
-        }
+    position() {
+        return this.lexer.position;
     }
 
     parseVariable() {
-        let name = this.sourceText.substring(this.position, this.position + 1);
-        // advance one character
-        this.position += 1;
-        while (this.isAtVariable()) {
-            name += this.sourceText.substring(this.position, this.position + 1);
-            this.position += 1;
-        }
-
-        return new Variable(name);
+        return new Variable(this.nextToken().contents);
     }
 
     parseAbstraction() {
-        // advance past the 'λ'
-        this.position += 1;
-        if (!this.isAtVariable()) {
-            throw new Error(`Expected parameter (variable) at position ${this.position}`);
+        // 'λ'
+        this.ignoreToken();
+        if (this.peekToken().type !== TokenType.VARIABLE) {
+            throw new Error(`Expected parameter (variable) at position ${this.position()}, found ${this.peekToken()}`);
         }
         let parameter = this.parseVariable();
         let moreParameters = [];
-        this.skipWhitespace();
-        while (!this.isAtCharacter(".")) {
-            if (this.isAtVariable()) {
+        while (this.peekToken().type !== TokenType.DOT) {
+            if (this.peekToken().type === TokenType.VARIABLE) {
                 moreParameters.unshift(parameter);
                 parameter = this.parseVariable();
             } else {
-                throw new Error(`Expected dot at position ${this.position}`);
+                throw new Error(`Expected dot at position ${this.position()}, found ${this.peekToken()}`);
             }
-            this.skipWhitespace();
         }
-        // advance past the '.'
-        this.position += 1;
+        this.ignoreToken();
         let expr = this.parseExpression();
 
         let ast = new Abstraction(parameter, expr);
@@ -88,53 +145,47 @@ class Parser {
     }
 
     parseParenthesized() {
-        // advance past the '('
-        this.position += 1;
+        // '('
+        this.ignoreToken();
         let ast = this.parseExpression();
-        if (!this.isAtCharacter(")")) {
-            throw new Error(`Expected ')' at position ${this.position}`);
+        if (this.peekToken().type !== TokenType.CLOSING_PARENTHESIS) {
+            throw new Error(`Expected ')' at position ${this.position()}, found ${this.peekToken()}`);
         }
-        // advance past the ')'
-        this.position += 1;
+        this.ignoreToken();
 
         return ast;
     }
 
     parseExpression() {
-        this.skipWhitespace();
-        if (this.position >= this.sourceText.length) {
-            throw new Error(`Expected term at position ${this.position}, found EOF`);
+        let peek = this.peekToken().type;
+        if (peek === TokenType.EOF) {
+            throw new Error(`Expected term at position ${this.position()}, found ${peek}`);
         }
 
         let ast;
-        if (this.isAtVariable()) {
+        if (peek === TokenType.VARIABLE) {
             ast = this.parseVariable();
-        } else if (this.isAtCharacter("λ")) {
+        } else if (peek === TokenType.LAMBDA) {
             ast = this.parseAbstraction();
-        } else if (this.isAtCharacter("(")) {
+        } else if (peek === TokenType.OPENING_PARENTHESIS) {
             ast = this.parseParenthesized();
-        } else if (this.isAtCharacter(")")) {
-            throw new Error(`Expected term at position ${this.position}, found ")"`);
+        } else if (peek === TokenType.CLOSING_PARENTHESIS) {
+            throw new Error(`Expected term at position ${this.position()}, found ${peek}`);
         } else {
-            throw new Error(`Expected expression at position ${this.position}`);
+            throw new Error(`Expected expression at position ${this.position()}, found ${peek}`);
         }
 
-        while (this.position < this.sourceText.length) {
-            this.skipWhitespace();
-            if (this.position >= this.sourceText.length) {
-                break;
-            }
-
-            if (this.isAtVariable()) {
+        while ((peek = this.peekToken().type) !== TokenType.EOF) {
+            if (peek === TokenType.VARIABLE) {
                 ast = new Application(ast, this.parseVariable());
-            } else if (this.isAtCharacter("λ")) {
+            } else if (peek === TokenType.LAMBDA) {
                 ast = new Application(ast, this.parseAbstraction());
-            } else if (this.isAtCharacter("(")) {
+            } else if (peek === TokenType.OPENING_PARENTHESIS) {
                 ast = new Application(ast, this.parseParenthesized());
-            } else if (this.isAtCharacter(")")) {
+            } else if (peek === TokenType.CLOSING_PARENTHESIS) {
                 break;
             } else {
-                throw new Error(`Expected expression at position ${this.position}`);
+                throw new Error(`Expected expression at position ${this.position()}, found ${peek}`);
             }
         }
 
