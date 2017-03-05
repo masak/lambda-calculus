@@ -156,12 +156,8 @@ class Parser {
         return ast;
     }
 
-    parseExpression() {
+    parseTerm() {
         let peek = this.peekToken().type;
-        if (peek === TokenType.EOF) {
-            throw new Error(`Expected term at position ${this.position()}, found ${peek}`);
-        }
-
         let ast;
         if (peek === TokenType.VARIABLE) {
             ast = this.parseVariable();
@@ -169,24 +165,26 @@ class Parser {
             ast = this.parseAbstraction();
         } else if (peek === TokenType.OPENING_PARENTHESIS) {
             ast = this.parseParenthesized();
+        } else if (peek === TokenType.DOT) {
+            throw new Error(`Expected expression at position ${this.position()}, found ${peek}`);
+        } else {
+            return;
+        }
+        return ast;
+    }
+
+    parseExpression() {
+        let peek = this.peekToken().type;
+        if (peek === TokenType.EOF) {
+            throw new Error(`Expected term at position ${this.position()}, found ${peek}`);
         } else if (peek === TokenType.CLOSING_PARENTHESIS) {
             throw new Error(`Expected term at position ${this.position()}, found ${peek}`);
-        } else {
-            throw new Error(`Expected expression at position ${this.position()}, found ${peek}`);
         }
-
-        while ((peek = this.peekToken().type) !== TokenType.EOF) {
-            if (peek === TokenType.VARIABLE) {
-                ast = new Application(ast, this.parseVariable());
-            } else if (peek === TokenType.LAMBDA) {
-                ast = new Application(ast, this.parseAbstraction());
-            } else if (peek === TokenType.OPENING_PARENTHESIS) {
-                ast = new Application(ast, this.parseParenthesized());
-            } else if (peek === TokenType.CLOSING_PARENTHESIS) {
-                break;
-            } else {
-                throw new Error(`Expected expression at position ${this.position()}, found ${peek}`);
-            }
+        let ast = this.parseTerm();
+        let argument = this.parseTerm();
+        while (argument) {
+            ast = new Application(ast, argument);
+            argument = this.parseTerm();
         }
 
         return ast;
