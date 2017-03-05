@@ -91,15 +91,24 @@ class Parser {
     }
 
     parseExpression() {
-        function combine(oldAst, newAst) {
-            if (typeof oldAst === "undefined") {
-                return newAst;
-            }
-
-            return new Application(oldAst, newAst);
+        this.skipWhitespace();
+        if (this.position >= this.sourceText.length) {
+            throw new Error(`Expected term at position ${this.position}, found EOF`);
         }
 
         let ast;
+        if (this.isAtVariable()) {
+            ast = this.parseVariable();
+        } else if (this.isAtCharacter("λ")) {
+            ast = this.parseAbstraction();
+        } else if (this.isAtCharacter("(")) {
+            ast = this.parseParenthesized();
+        } else if (this.isAtCharacter(")")) {
+            throw new Error(`Expected term at position ${this.position}, found ")"`);
+        } else {
+            throw new Error(`Expected expression at position ${this.position}`);
+        }
+
         while (this.position < this.sourceText.length) {
             this.skipWhitespace();
             if (this.position >= this.sourceText.length) {
@@ -107,11 +116,11 @@ class Parser {
             }
 
             if (this.isAtVariable()) {
-                ast = combine(ast, this.parseVariable());
+                ast = new Application(ast, this.parseVariable());
             } else if (this.isAtCharacter("λ")) {
-                ast = combine(ast, this.parseAbstraction());
+                ast = new Application(ast, this.parseAbstraction());
             } else if (this.isAtCharacter("(")) {
-                ast = combine(ast, this.parseParenthesized());
+                ast = new Application(ast, this.parseParenthesized());
             } else if (this.isAtCharacter(")")) {
                 break;
             } else {
