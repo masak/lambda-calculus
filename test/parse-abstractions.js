@@ -21,8 +21,8 @@ describe("an abstraction in lambda calculus", () => {
     // A sequence of abstractions is contracted: λx.λy.λz.N is abbreviated as λxyz.N
     it("can be contracted by writing parameters one after another", () => {
         assert.deepEqual(
-            ast("λx.λy.λz.z"),
-            ast("λxyz.z")
+            ast("λone.λtwo.λthree.three"),
+            ast("λone two three.three")
         );
     });
 

@@ -42,8 +42,12 @@ class Parser {
 
     parseVariable() {
         let variable = this.sourceText.substring(this.position, this.position + 1);
-        // advance past the variable
+        // advance one character
         this.position += 1;
+        while (this.isAtVariable()) {
+            variable += this.sourceText.substring(this.position, this.position + 1);
+            this.position += 1;
+        }
 
         return variable;
     }
