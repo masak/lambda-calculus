@@ -137,11 +137,9 @@ class Parser {
         this.ignoreToken();
         let expr = this.parseExpression();
 
-        let ast = new Abstraction(parameter, expr);
-        moreParameters.forEach(p => {
-            ast = new Abstraction(p, ast);
-        });
-        return ast;
+        return moreParameters.reduce(
+            (ast, p) => new Abstraction(p, ast),
+            new Abstraction(parameter, expr));
     }
 
     parseParenthesized() {
