@@ -17,14 +17,17 @@ const TokenType = {
     EOF: "EOF",
 };
 
+const tokenForCharacter = {
+    "λ": "LAMBDA",
+    ".": "DOT",
+    "(": "OPENING_PARENTHESIS",
+    ")": "CLOSING_PARENTHESIS",
+};
+
 class Lexer {
     constructor(sourceText) {
         this.sourceText = sourceText;
         this.position = 0;
-    }
-
-    isAtCharacter(c) {
-        return this.sourceText.substring(this.position, this.position + 1) === c;
     }
 
     isAtWhitespace() {
@@ -37,7 +40,7 @@ class Lexer {
             this.position += 1;
         }
 
-        let c = this.sourceText.substring(this.position);
+        let c = this.sourceText.substring(this.position, this.position + 1);
         if (this.position >= sourceLength) {
             return new Token(TokenType.EOF);
         } else if (IS_LETTER.test(c)) {
@@ -48,18 +51,9 @@ class Lexer {
             let name = this.sourceText.substring(this.position, newPosition);
             this.position = newPosition;
             return new Token(TokenType.VARIABLE, name);
-        } else if (this.isAtCharacter("λ")) {
+        } else if (tokenForCharacter.hasOwnProperty(c)) {
             this.position += 1;
-            return new Token(TokenType.LAMBDA);
-        } else if (this.isAtCharacter(".")) {
-            this.position += 1;
-            return new Token(TokenType.DOT);
-        } else if (this.isAtCharacter("(")) {
-            this.position += 1;
-            return new Token(TokenType.OPENING_PARENTHESIS);
-        } else if (this.isAtCharacter(")")) {
-            this.position += 1;
-            return new Token(TokenType.CLOSING_PARENTHESIS);
+            return new Token(tokenForCharacter[c]);
         } else {
             throw new Error(`Unknown character at position ${this.position}: ${c}`);
         }
