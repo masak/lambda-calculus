@@ -8,7 +8,7 @@ class Token {
     }
 }
 
-const TokenType = {
+const tokenType = {
     LAMBDA: "LAMBDA",
     VARIABLE: "VARIABLE",
     DOT: "DOT",
@@ -42,7 +42,7 @@ class Lexer {
 
         let c = this.sourceText.substring(this.position, this.position + 1);
         if (this.position >= sourceLength) {
-            return new Token(TokenType.EOF);
+            return new Token(tokenType.EOF);
         } else if (IS_LETTER.test(c)) {
             let newPosition = this.position + 1;
             while (IS_LETTER.test(this.sourceText.substring(newPosition))) {
@@ -50,7 +50,7 @@ class Lexer {
             }
             let name = this.sourceText.substring(this.position, newPosition);
             this.position = newPosition;
-            return new Token(TokenType.VARIABLE, name);
+            return new Token(tokenType.VARIABLE, name);
         } else if (tokenForCharacter.hasOwnProperty(c)) {
             this.position += 1;
             return new Token(tokenForCharacter[c]);
@@ -127,13 +127,13 @@ class Parser {
     parseAbstraction() {
         // 'λ'
         this.ignoreToken();
-        if (this.peekToken().type !== TokenType.VARIABLE) {
+        if (this.peekToken().type !== tokenType.VARIABLE) {
             throw new Error(`Expected parameter (variable) at position ${this.position()}, found ${this.peekToken()}`);
         }
         let parameter = this.parseVariable();
         let moreParameters = [];
-        while (this.peekToken().type !== TokenType.DOT) {
-            if (this.peekToken().type === TokenType.VARIABLE) {
+        while (this.peekToken().type !== tokenType.DOT) {
+            if (this.peekToken().type === tokenType.VARIABLE) {
                 moreParameters.unshift(parameter);
                 parameter = this.parseVariable();
             } else {
@@ -152,7 +152,7 @@ class Parser {
         // '('
         this.ignoreToken();
         let ast = this.parseExpression();
-        if (this.peekToken().type !== TokenType.CLOSING_PARENTHESIS) {
+        if (this.peekToken().type !== tokenType.CLOSING_PARENTHESIS) {
             throw new Error(`Expected ')' at position ${this.position()}, found ${this.peekToken()}`);
         }
         this.ignoreToken();
@@ -163,13 +163,13 @@ class Parser {
     parseTerm() {
         let peek = this.peekToken().type;
         let ast;
-        if (peek === TokenType.VARIABLE) {
+        if (peek === tokenType.VARIABLE) {
             ast = this.parseVariable();
-        } else if (peek === TokenType.LAMBDA) {
+        } else if (peek === tokenType.LAMBDA) {
             ast = this.parseAbstraction();
-        } else if (peek === TokenType.OPENING_PARENTHESIS) {
+        } else if (peek === tokenType.OPENING_PARENTHESIS) {
             ast = this.parseParenthesized();
-        } else if (peek === TokenType.DOT) {
+        } else if (peek === tokenType.DOT) {
             throw new Error(`Expected expression at position ${this.position()}, found ${peek}`);
         } else {
             return;
@@ -179,9 +179,9 @@ class Parser {
 
     parseExpression() {
         let peek = this.peekToken().type;
-        if (peek === TokenType.EOF) {
+        if (peek === tokenType.EOF) {
             throw new Error(`Expected term at position ${this.position()}, found ${peek}`);
-        } else if (peek === TokenType.CLOSING_PARENTHESIS) {
+        } else if (peek === tokenType.CLOSING_PARENTHESIS) {
             throw new Error(`Expected term at position ${this.position()}, found ${peek}`);
         }
         let ast = this.parseTerm();
