@@ -71,6 +71,10 @@ class Variable {
     constructor(name) {
         this.name = name;
     }
+
+    binds(name) {
+        return false;
+    }
 }
 
 class Abstraction {
@@ -78,12 +82,20 @@ class Abstraction {
         this.parameter = parameter;
         this.expr = expr;
     }
+
+    binds(name) {
+        return name === this.parameter.name || this.expr.binds(name);
+    }
 }
 
 class Application {
     constructor(operator, argument) {
         this.operator = operator;
         this.argument = argument;
+    }
+
+    binds(name) {
+        return this.operator.binds(name) || this.argument.binds(name);
     }
 }
 
@@ -205,10 +217,5 @@ export function ast(text) {
 }
 
 export function isBound(name, ast) {
-    if (ast instanceof Abstraction) {
-        return name === ast.parameter.name || isBound(name, ast.expr);
-    } else if (ast instanceof Application) {
-        return isBound(name, ast.operator) || isBound(name, ast.argument);
-    }
-    return false;
+    return ast.binds(name);
 }
