@@ -215,7 +215,3 @@ export function ast(text) {
 
     return result;
 }
-
-export function isBound(name, ast) {
-    return ast.binds(name);
-}
