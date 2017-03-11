@@ -1,6 +1,6 @@
 const IS_ALPHA = /^[a-zA-Z]/;
 const IS_ALPHANUMERIC = /^[a-zA-Z0-9]/;
-const IS_WHITESPACE = /^\s/;
+const WHITESPACE_PREFIX = /^\s*/;
 
 class Token {
     constructor(type, contents) {
@@ -31,18 +31,12 @@ class Lexer {
         this.position = 0;
     }
 
-    isAtWhitespace() {
-        return IS_WHITESPACE.test(this.sourceText.substring(this.position, this.position + 1));
-    }
-
     nextToken() {
-        let sourceLength = this.sourceText.length;
-        while (this.position < sourceLength && this.isAtWhitespace()) {
-            this.position += 1;
-        }
+        let whitespace = this.sourceText.substring(this.position).match(WHITESPACE_PREFIX) || [""];
+        this.position += whitespace[0].length;
 
         let c = this.sourceText.substring(this.position, this.position + 1);
-        if (this.position >= sourceLength) {
+        if (this.position >= this.sourceText.length) {
             return new Token(tokenType.EOF);
         } else if (IS_ALPHA.test(c)) {
             let newPosition = this.position + 1;
