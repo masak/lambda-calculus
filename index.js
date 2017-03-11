@@ -79,13 +79,13 @@ class Abstraction {
 }
 
 class Application {
-    constructor(operator, argument) {
+    constructor(operator, operand) {
         this.operator = operator;
-        this.argument = argument;
+        this.operand = operand;
     }
 
     binds(name) {
-        return this.operator.binds(name) || this.argument.binds(name);
+        return this.operator.binds(name) || this.operand.binds(name);
     }
 }
 
@@ -175,10 +175,10 @@ class Parser {
             throw new Error(`Expected term at position ${this.position()}, found ${peek}`);
         }
         let ast = this.parseTerm();
-        let argument = this.parseTerm();
-        while (argument) {
-            ast = new Application(ast, argument);
-            argument = this.parseTerm();
+        let operand = this.parseTerm();
+        while (operand) {
+            ast = new Application(ast, operand);
+            operand = this.parseTerm();
         }
 
         return ast;
