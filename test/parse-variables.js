@@ -15,4 +15,8 @@ describe("a variable in lambda calculus", () => {
     it("can't be an underscore", () => {
         assert(!isExpression("_"));
     });
+
+    it("can be a word followed by digits", () => {
+        assert(isExpression("agenda21"));
+    });
 });

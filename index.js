@@ -1,4 +1,5 @@
-const IS_LETTER = /^[a-zA-Z]/;
+const IS_ALPHA = /^[a-zA-Z]/;
+const IS_ALPHANUMERIC = /^[a-zA-Z0-9]/;
 const IS_WHITESPACE = /^\s/;
 
 class Token {
@@ -43,9 +44,9 @@ class Lexer {
         let c = this.sourceText.substring(this.position, this.position + 1);
         if (this.position >= sourceLength) {
             return new Token(tokenType.EOF);
-        } else if (IS_LETTER.test(c)) {
+        } else if (IS_ALPHA.test(c)) {
             let newPosition = this.position + 1;
-            while (IS_LETTER.test(this.sourceText.substring(newPosition))) {
+            while (IS_ALPHANUMERIC.test(this.sourceText.substring(newPosition))) {
                 newPosition += 1;
             }
             let name = this.sourceText.substring(this.position, newPosition);
