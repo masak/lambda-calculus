@@ -65,6 +65,14 @@ class Variable {
     binds(name) {
         return false;
     }
+
+    toString() {
+        return this.name;
+    }
+
+    toInnerString() {
+        return this.toString();
+    }
 }
 
 class Abstraction {
@@ -76,6 +84,14 @@ class Abstraction {
     binds(name) {
         return name === this.parameter.name || this.expr.binds(name);
     }
+
+    toString() {
+        return `λ${this.parameter}.${this.expr}`;
+    }
+
+    toInnerString() {
+        return `(${this.toString()})`;
+    }
 }
 
 class Application {
@@ -86,6 +102,14 @@ class Application {
 
     binds(name) {
         return this.operator.binds(name) || this.operand.binds(name);
+    }
+
+    toString() {
+        return `${this.operator.toInnerString()} ${this.operand.toInnerString()}`;
+    }
+
+    toInnerString() {
+        return this.toString();
     }
 }
 
