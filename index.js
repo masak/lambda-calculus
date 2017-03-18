@@ -83,6 +83,22 @@ class Variable {
                 : unboundSeen[this.name] = `u${Object.keys(unboundSeen).length}`;
         return new Variable(name);
     }
+
+    _rename(oldName, newName) {
+        return this.rename(oldName, newName);
+    }
+
+    rename(oldName, newName) {
+        return new Variable(newName);
+    }
+
+    canRename(oldName, newName) {
+        return true;
+    }
+
+    isEquivalentTo(ast) {
+        return this.normalize().toString() === ast.normalize().toString();
+    }
 }
 
 class Abstraction {
@@ -109,6 +125,27 @@ class Abstraction {
             this.expr.normalize(depth + 1, unboundSeen, [...boundDepths, this.parameter.name]),
         );
     }
+
+    _rename(oldName, newName) {
+        return this.parameter.name === oldName
+            ? this
+            : new Abstraction(this.parameter._rename(oldName, newName), this.expr._rename(oldName, newName));
+    }
+
+    rename(oldName, newName) {
+        if (this.binds(newName)) {
+            throw new Error(`Cannot rename -- variable ${newName} is bound in expression`);
+        }
+        return new Abstraction(this.parameter._rename(oldName, newName), this.expr._rename(oldName, newName));
+    }
+
+    canRename(oldName, newName) {
+        return !this.binds(newName);
+    }
+
+    isEquivalentTo(ast) {
+        return this.normalize().toString() === ast.normalize().toString();
+    }
 }
 
 class Application {
@@ -134,6 +171,25 @@ class Application {
             this.operator.normalize(depth, unboundSeen, boundDepths),
             this.operand.normalize(depth, unboundSeen, boundDepths),
         );
+    }
+
+    _rename(oldName, newName) {
+        return new Application(this.operator.rename(oldName, newName), this.operand.rename(oldName, newName));
+    }
+
+    rename(oldName, newName) {
+        if (this.binds(newName)) {
+            throw new Error(`Cannot rename -- variable ${newName} is bound in expression`);
+        }
+        return this._rename(oldName, newName);
+    }
+
+    canRename(oldName, newName) {
+        return !this.binds(newName);
+    }
+
+    isEquivalentTo(ast) {
+        return this.normalize().toString() === ast.normalize().toString();
     }
 }
 
