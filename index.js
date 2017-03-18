@@ -99,6 +99,10 @@ class Variable {
     isEquivalentTo(ast) {
         return this.normalize().toString() === ast.normalize().toString();
     }
+
+    isClosed(boundDepths = []) {
+        return boundDepths.includes(this.name);
+    }
 }
 
 class Abstraction {
@@ -146,6 +150,10 @@ class Abstraction {
     isEquivalentTo(ast) {
         return this.normalize().toString() === ast.normalize().toString();
     }
+
+    isClosed(boundDepths = []) {
+        return this.expr.isClosed([...boundDepths, this.parameter.name]);
+    }
 }
 
 class Application {
@@ -190,6 +198,11 @@ class Application {
 
     isEquivalentTo(ast) {
         return this.normalize().toString() === ast.normalize().toString();
+    }
+
+    isClosed(boundDepths = []) {
+        return this.operator.isClosed(boundDepths) &&
+            this.operand.isClosed(boundDepths);
     }
 }
 
