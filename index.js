@@ -73,6 +73,16 @@ class Variable {
     toInnerString() {
         return this.toString();
     }
+
+    normalize(depth = 0, unboundSeen = {}, boundDepths = []) {
+        let boundDepth = boundDepths.lastIndexOf(this.name);
+        let name = boundDepth !== -1
+            ? `b${depth - boundDepth - 1}`
+            : unboundSeen.hasOwnProperty(this.name)
+                ? unboundSeen[this.name]
+                : unboundSeen[this.name] = `u${Object.keys(unboundSeen).length}`;
+        return new Variable(name);
+    }
 }
 
 class Abstraction {
@@ -92,6 +102,13 @@ class Abstraction {
     toInnerString() {
         return `(${this.toString()})`;
     }
+
+    normalize(depth = 0, unboundSeen = {}, boundDepths = []) {
+        return new Abstraction(
+            new Variable("L"),
+            this.expr.normalize(depth + 1, unboundSeen, [...boundDepths, this.parameter.name]),
+        );
+    }
 }
 
 class Application {
@@ -110,6 +127,13 @@ class Application {
 
     toInnerString() {
         return this.toString();
+    }
+
+    normalize(depth = 0, unboundSeen = {}, boundDepths = []) {
+        return new Application(
+            this.operator.normalize(depth, unboundSeen, boundDepths),
+            this.operand.normalize(depth, unboundSeen, boundDepths),
+        );
     }
 }
 
