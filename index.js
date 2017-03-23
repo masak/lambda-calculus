@@ -168,7 +168,9 @@ class Application extends Expression {
     }
 
     toString() {
-        return `${this.operator.toInnerString()} ${this.operand.toInnerString()}`;
+        return this.operand instanceof Application
+            ? `${this.operator.toInnerString()} (${this.operand.toInnerString()})`
+            : `${this.operator.toInnerString()} ${this.operand.toInnerString()}`;
     }
 
     normalize(depth = 0, unboundSeen = {}, boundDepths = []) {

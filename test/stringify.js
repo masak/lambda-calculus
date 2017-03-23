@@ -8,5 +8,8 @@ describe("stringification of a lambda calculus AST", () => {
         assert.equal(ast("(λx.x)").toString(), "λx.x");
         assert.equal(ast("((λx.x))").toString(), "λx.x");
         assert.equal(ast(" λ   x . x  ").toString(), "λx.x");
+        assert.equal(ast("x y z").toString(), "x y z");
+        assert.equal(ast("(x y) z").toString(), "x y z");
+        assert.equal(ast("x (y z)").toString(), "x (y z)");
     });
 });
