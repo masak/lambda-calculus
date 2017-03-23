@@ -57,8 +57,19 @@ class Lexer {
     }
 }
 
-class Variable {
+class Expression {
+    toInnerString() {
+        return this.toString();
+    }
+
+    isEquivalentTo(ast) {
+        return this.normalize().toString() === ast.normalize().toString();
+    }
+}
+
+class Variable extends Expression {
     constructor(name) {
+        super();
         this.name = name;
     }
 
@@ -68,10 +79,6 @@ class Variable {
 
     toString() {
         return this.name;
-    }
-
-    toInnerString() {
-        return this.toString();
     }
 
     normalize(depth = 0, unboundSeen = {}, boundDepths = []) {
@@ -96,17 +103,14 @@ class Variable {
         return true;
     }
 
-    isEquivalentTo(ast) {
-        return this.normalize().toString() === ast.normalize().toString();
-    }
-
     isClosed(boundDepths = []) {
         return boundDepths.includes(this.name);
     }
 }
 
-class Abstraction {
+class Abstraction extends Expression {
     constructor(parameter, expr) {
+        super();
         this.parameter = parameter;
         this.expr = expr;
     }
@@ -147,17 +151,14 @@ class Abstraction {
         return !this.binds(newName);
     }
 
-    isEquivalentTo(ast) {
-        return this.normalize().toString() === ast.normalize().toString();
-    }
-
     isClosed(boundDepths = []) {
         return this.expr.isClosed([...boundDepths, this.parameter.name]);
     }
 }
 
-class Application {
+class Application extends Expression {
     constructor(operator, operand) {
+        super();
         this.operator = operator;
         this.operand = operand;
     }
@@ -168,10 +169,6 @@ class Application {
 
     toString() {
         return `${this.operator.toInnerString()} ${this.operand.toInnerString()}`;
-    }
-
-    toInnerString() {
-        return this.toString();
     }
 
     normalize(depth = 0, unboundSeen = {}, boundDepths = []) {
@@ -194,10 +191,6 @@ class Application {
 
     canRename(oldName, newName) {
         return !this.binds(newName);
-    }
-
-    isEquivalentTo(ast) {
-        return this.normalize().toString() === ast.normalize().toString();
     }
 
     isClosed(boundDepths = []) {
