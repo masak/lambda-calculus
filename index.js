@@ -28,9 +28,16 @@ class Lexer {
     constructor(sourceText) {
         this.sourceText = sourceText;
         this.position = 0;
+        this.peekedToken = this._nextToken();
     }
 
     nextToken() {
+        let token = this.peekedToken;
+        this.peekedToken = this._nextToken();
+        return token;
+    }
+
+    _nextToken() {
         let whitespace = this.sourceText.substring(this.position).match(WHITESPACE_PREFIX) || [""];
         this.position += whitespace[0].length;
 
@@ -50,10 +57,7 @@ class Lexer {
     }
 
     peekToken() {
-        let oldPosition = this.position;
-        let token = this.nextToken();
-        this.position = oldPosition;
-        return token;
+        return this.peekedToken;
     }
 }
 
