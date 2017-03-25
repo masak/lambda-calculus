@@ -42,10 +42,10 @@ class Lexer {
         this.position += whitespace[0].length;
 
         let c = this.sourceText.substring(this.position, this.position + 1);
-        let variable;
+        let variable = this.sourceText.substring(this.position).match(VARIABLE);
         if (this.position >= this.sourceText.length) {
             return new Token(tokenType.EOF);
-        } else if ((variable = this.sourceText.substring(this.position).match(VARIABLE)) !== null) {
+        } else if (variable !== null) {
             this.position += variable[0].length;
             return new Token(tokenType.VARIABLE, variable[0]);
         } else if (tokenForCharacter.hasOwnProperty(c)) {
