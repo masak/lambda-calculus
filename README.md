@@ -3,9 +3,14 @@
 We're implementing the untyped lambda calculus, as described by Church, because we
 want to gain a better understanding of its mechanisms.
 
+We're also writing a tutorial of lambda calculus, which we're hoping to integrate
+with this repository. So far the tutorial is located in
+[this gist](https://gist.github.com/masak/8e082999e06bfb4d03b8d12899bbcde5), but
+the plan is to move it into this repository's Github pages.
+
 ## TODO
 
-Here's the things I hope to implement:
+Here's the things we hope to implement:
 
 * Syntax for lambda terms: variables, abstraction, application.
 * Abbreviated syntax.
