@@ -1,6 +1,6 @@
 # The untyped lambda calculus
 
-I'm implementing the untyped lambda calculus, as described by Church, because I
+We're implementing the untyped lambda calculus, as described by Church, because we
 want to gain a better understanding of its mechanisms.
 
 ## TODO
