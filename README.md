@@ -3,6 +3,10 @@
 We're implementing the untyped lambda calculus, as described by Church, because we
 want to gain a better understanding of its mechanisms.
 
+(What does "untyped" mean here? It means simply that we deal with terms but not
+with types. The untyped lambda calculus is more powerful than the later typed
+lambda calculus, but at the cost of some devastating inconsistencies, Gödel-style.)
+
 We're also writing a tutorial of lambda calculus, which we're hoping to integrate
 with this repository. So far the tutorial is located in
 [this gist](https://gist.github.com/masak/8e082999e06bfb4d03b8d12899bbcde5), but
