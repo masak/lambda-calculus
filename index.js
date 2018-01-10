@@ -38,7 +38,7 @@ class Lexer {
     }
 
     _nextToken() {
-        let whitespace = this.sourceText.substring(this.position).match(WHITESPACE_PREFIX) || [""];
+        let whitespace = this.sourceText.substring(this.position).match(WHITESPACE_PREFIX);
         this.position += whitespace[0].length;
 
         let c = this.sourceText.substring(this.position, this.position + 1);
