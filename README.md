@@ -3,7 +3,7 @@
 We're implementing the untyped lambda calculus, as described by Church, because we
 want to gain a better understanding of its mechanisms.
 
-(What does "untyped" mean here? It means simply that we deal with terms but not
+(What does "untyped" mean here? It means that we deal with terms, expressions denoting values, but not
 with types. The untyped lambda calculus is more powerful than the later typed
 lambda calculus, but at the cost of some devastating inconsistencies, Gödel-style.)
 
