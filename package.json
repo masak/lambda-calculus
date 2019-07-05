@@ -16,7 +16,7 @@
   "license": "BSD-3-Clause",
   "dependencies": {},
   "devDependencies": {
-    "babel-cli": "^6.6.5",
+    "babel-cli": "6.26.0",
     "babel-core": "^6.9.1",
     "babel-eslint": "^6.0.2",
     "babel-preset-es2015": "^6.3.13",
@@ -24,7 +24,7 @@
     "babel-preset-stage-2": "^6.5.0",
     "babelify": "^7.3.0",
     "browserify": "^14.1.0",
-    "eslint": ">=4.18.2",
-    "mocha": "^2.5.3"
+    "eslint": "6.0.1",
+    "mocha": "^6.1.4"
   }
 }
