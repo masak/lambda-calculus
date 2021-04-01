@@ -210,16 +210,12 @@ class Parser {
         this.lexer = lexer;
     }
 
-    nextToken() {
-        return this.lexer.nextToken();
-    }
-
     peekToken() {
         return this.lexer.peekToken();
     }
 
     ignoreToken() {
-        this.nextToken();
+        this.lexer.nextToken();
     }
 
     position() {
@@ -227,7 +223,7 @@ class Parser {
     }
 
     parseVariable() {
-        return new Variable(this.nextToken().contents);
+        return new Variable(this.lexer.nextToken().contents);
     }
 
     parseAbstraction() {
