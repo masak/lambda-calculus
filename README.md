@@ -7,10 +7,8 @@ want to gain a better understanding of its mechanisms.
 with types. The untyped lambda calculus is more powerful than the later typed
 lambda calculus, but at the cost of some devastating inconsistencies, Gödel-style.)
 
-We're also writing a tutorial of lambda calculus, which we're hoping to integrate
-with this repository. So far the tutorial is located in
-[this gist](https://gist.github.com/masak/8e082999e06bfb4d03b8d12899bbcde5), but
-the plan is to move it into this repository's Github pages.
+We're also writing [a tutorial](https://github.com/masak/lambda-calculus/tree/master/tutorial)
+of lambda calculus.
 
 ## TODO
 
