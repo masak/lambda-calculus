@@ -15,6 +15,8 @@ It's perhaps easiest to feel how unlikely this claim is by considering how much 
 
 Instead, lambda calculus offers just its two building blocks to construct these things. On the face of it, this doesn't seem enough. The miracle of lambda calculus is that abstractions and applications are enough for these things.
 
+(_See also_: the blog post [programming with nothing](https://tomstu.art/programming-with-nothing) by Tom Stuart, which also has a recorded [talk](https://www.youtube.com/watch?v=VUhlNx_-wYk). Surprisingly similar content.)
+
 ## Abstraction
 
 An *abstraction* is a nameless function with exactly one parameter. Here's the simplest possible example, the identity function:
