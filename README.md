@@ -10,6 +10,19 @@ lambda calculus, but at the cost of some devastating inconsistencies, Gödel-sty
 We're also writing [a tutorial](https://github.com/masak/lambda-calculus/tree/master/tutorial)
 of lambda calculus.
 
+## Grammar
+
+```
+term ::= var | "λ" var "." term | term term
+```
+
+Furthermore,
+
+* Any term can be surrounded by parentheses (`(` `)`) for disambiguation
+* Applications associate to the left
+* Abstraction bodies extend as far as possible to the right
+* A single abstraction declaring several parameters (`λ x y z . term`) is syntactic sugar for a sequence of abstractions (`λx.λy.λz.term`)
+
 ## TODO
 
 Here's the things we hope to implement:
