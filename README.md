@@ -21,7 +21,7 @@ Here's the things we hope to implement:
 * α-conversion: "hygienic" renaming of bound variables. ← *We're this far already*
 * β-reduction: actually applying an appliction.
 * η-reduction: converting `λx.f x` into `f`
-* η-abstraction: converting `f` into `λx.f x`
+* η-expansion: converting `f` into `λx.f x`
 * Reduction strategies:
     * Applicative order
     * Normal order
